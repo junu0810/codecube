@@ -34,25 +34,28 @@ function App() {
 
     if (authorizationCode) {
       // 깃헙관련
-      console.log('$$$$$$$$$$$$$$$$$$$$', authorizationCode)
+      console.log('$$$', authorizationCode)
     } else {
       console.log('로그인 요청은 성공함.')
-      await axios.get('http://localhost:4000/users').then(({ data: { data } }) => {
-        const userJSON = {
-          id: data.id,
-          username: data.username,
-          email: data.email,
-          description: data.description,
-          stacks: data.stacks,
-          image: data.image,
-        }
-        if (!data.image) {
-          // axios.get(`http://localhost:4000/image/${}`)
-        }
-        window.localStorage.setItem('userinfo', JSON.stringify(userJSON))
-        setUserinfo(data)
-        setisLoggedIn(true)
-      })
+      await axios.get('http://localhost:4000/users')
+        .then(({ data: { data } }) => {
+          const userJSON = {
+            id: data.id,
+            username: data.username,
+            email: data.email,
+            description: data.description,
+            stacks: data.stacks,
+            image: data.image,
+          }
+          console.log(userJSON.image)
+          if (data.image) {
+            axios.get(`http://localhost:4000/image/${userJSON.image}`)
+              .then((res) => console.log(res.data))
+          }
+          window.localStorage.setItem('userinfo', JSON.stringify(userJSON))
+          setUserinfo(data)
+          setisLoggedIn(true)
+        })
     }
   }
 

@@ -20,7 +20,6 @@ const Mypage = (props) => {
     username: username,
     description: description,
   })
-  console.log(userInfoEdited)
 
   const checkboxhandler = (checked, id) => {
     if (checked) {
@@ -44,7 +43,6 @@ const Mypage = (props) => {
     userInfoEdited['stacks'] = checkedStacks
     await axios.put('http://localhost:4000/users', userInfoEdited)
       .then(({ data: { data } }) => {
-        console.log(data)
         setEditProfileBtn(false)
         props.isAuthenticated()
         navigate('/')
