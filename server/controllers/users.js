@@ -85,7 +85,6 @@ module.exports = {
     put: async (req, res) => {
       const token = req.cookies.jwt
       const newInfo = req.body
-
       //요청정보가 없을시 분기처리
       if (!newInfo) {
         res.status(400).json({ message: 'invalid userinfo' })
@@ -118,7 +117,9 @@ module.exports = {
             id: userId,
           },
         })
+
         res.status(200).json({
+          image: req.body.image,
           message: 'successfully modified',
         })
       }

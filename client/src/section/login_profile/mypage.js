@@ -5,11 +5,14 @@ import axios from 'axios'
 import './mypage.css'
 axios.defaults.withCredentials = true
 
+
+
 const Mypage = (props) => {
   const { username, stacks, description, image, email } = props.userinfo
   const navigate = useNavigate()
   const [checkedStacks, setCheckedStacks] = useState([])
   const [editProfileBtn, setEditProfileBtn] = useState(false)
+  const [images, setImage] = useState([])
 
   const [userInfoEdited, setUserInfoEdited] = useState({
     image: image,
@@ -17,6 +20,7 @@ const Mypage = (props) => {
     username: username,
     description: description,
   })
+  console.log(userInfoEdited)
 
   const checkboxhandler = (checked, id) => {
     if (checked) {
@@ -35,20 +39,46 @@ const Mypage = (props) => {
     navigate('/')
   }
 
+
   const handleSave = async () => {
     userInfoEdited['stacks'] = checkedStacks
-    await axios.put('http://localhost:4000/', userInfoEdited).then((res) => {
-      setEditProfileBtn(false)
-      props.isAuthenticated()
-      navigate('/')
-    })
+    await axios.put('http://localhost:4000/users', userInfoEdited)
+      .then(({ data: { data } }) => {
+        console.log(data)
+        setEditProfileBtn(false)
+        props.isAuthenticated()
+        navigate('/')
+      })
   }
 
-  //사진 삭제 전송 함수
+  async function postImage(obj) {
+    console.log(obj)
+    const formData = new FormData()
+    formData.append("image", obj.image)
+    console.log(formData)
+    await axios.post('http://localhost:4000/image', formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } })
+      .then(res => (setImageKey(res.data)))
+  }
+
+  function setImageKey(Key) {
+    userInfoEdited['image'] = Key
+  }
+
+  async function submit(event) {
+    event.preventDefault()
+    await postImage({ image: props.File })
+  }
+
+  //사진 File State에 업로드하기
   function changeMyprofile(event) {
+    console.log('이미지변경')
     props.changePhoto(event)
   }
+
+  // File State에 업로드한 사진삭제
   function clearMyProfile(event) {
+    alert('사진이 삭제되었습니다. 다시업로드 해주세요')
     props.clearPhoto(event)
   }
 
@@ -95,24 +125,26 @@ const Mypage = (props) => {
           <button className="mypage-btn" onClick={mypage}>
             내페이지
           </button>
-
           <div className="mypage-email">{email}</div>
           <div id="left-image-wrapper">
             <div id="left-pi-wrapper">기본 이미지</div>
-            <input
-              id="left-profile-button"
-              className="hidden"
-              type="file"
-              accept="image/*"
-              onChange={changeMyprofile}
-            />
-            <label id="left-fake-btn" htmlFor="left-profile-button">
-              프로필
-            </label>
+            <form onSubmit={submit} id="left-image-wrapper">
+              <input
+                id="left-profile-button"
+                className="hidden"
+                type="file"
+                accept="image/*"
+                onChange={changeMyprofile}
+              />
+              <label id="left-fake-btn" htmlFor="left-profile-button">
+                프로필
+              </label>
+              <button type='submit' id="left-fake-btn">사진설정</button>
+            </form>
             <input id="left-delete-button" className="hidden" />
-            <label id="left-fake-delete" htmlFor="left-delete-button">
-              삭제
-            </label>
+            <label
+              onClick={clearMyProfile}
+              id="left-fake-delete" htmlFor="left-delete-button">삭제</label>
           </div>
           <form className="form-wrapper" action="" onSubmit={(e) => e.preventDefault()}>
             <input
@@ -171,7 +203,6 @@ const Mypage = (props) => {
             <div>
               <img src={props.File} width="200px" height="100px" />
               <div>
-                <button onClick={clearMyProfile}> Clear IMG</button>
               </div>
             </div>
           )}

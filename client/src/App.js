@@ -29,7 +29,7 @@ function App() {
   const navigate = useNavigate()
   console.log('로그인은 했냐', isLoggedIn ? 'ㅇㅇ' : 'ㄴㄴ')
 
-  const isAuthenticated = async () => {
+  const isAuthenticated = async (Key) => {
     // TODO: 이제 인증은 성공했습니다. 사용자 정보를 호출하고, 이에 성공하면 로그인 상태를 바꿉시다.
 
     if (authorizationCode) {
@@ -45,6 +45,9 @@ function App() {
           description: data.description,
           stacks: data.stacks,
           image: data.image,
+        }
+        if (!data.image) {
+          // axios.get(`http://localhost:4000/image/${}`)
         }
         window.localStorage.setItem('userinfo', JSON.stringify(userJSON))
         setUserinfo(data)
@@ -103,24 +106,25 @@ function App() {
     navigate('/')
   }
   //사진삭제
-  function clearPhoto() {
-    setFile('')
-  }
+  // function clearPhoto() {
+  //   setFile('')
+  // }
   //사진 입력
-  function changePhoto(data) {
-    console.log('사진입력')
-    const {
-      target: { files },
-    } = event
-    const theFile = files[0]
-    const reader = new FileReader()
-    reader.readAsDataURL(theFile)
-    reader.onloadend = (finishedEvent) => {
-      const {
-        currentTarget: { result },
-      } = finishedEvent
-      setFile(result)
-    }
+  function changePhoto(event) {
+    // const {
+    //   target: { files },
+    // } = event
+    // // const theFile = files[0]
+    // // const reader = new FileReader()
+    // // reader.readAsDataURL(theFile)
+    // // reader.onloadend = (finishedEvent) => {
+    // //   const {
+    // //     currentTarget: { result },
+    // //   } = finishedEvent
+    //   setFile(result)
+    // }
+    const file = event.target.files[0]
+    setFile(file)
   }
 
   return (
@@ -141,8 +145,9 @@ function App() {
               isAuthenticated={isAuthenticated}
               // handleEdit={handleEdit}
               changePhoto={changePhoto}
-              clearPhoto={clearPhoto}
+              // clearPhoto={clearPhoto}
               File={File}
+              setFile={setFile}
             />
           ) : isSignup ? (
             <Signup

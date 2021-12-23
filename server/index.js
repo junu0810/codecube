@@ -11,7 +11,7 @@ const indexRouter = require('./routes')
 // sequelize.sync({ alter: true })
 
 app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
+app.use(express.json({ limit: '50mb' }))
 app.use(cookieParser())
 app.use(morgan('dev'))
 // app.use(cors({ origin: true }))
@@ -32,25 +32,5 @@ app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)
 })
 
-const multer = require('multer')
-const AWS = require('aws-sdk')
-const multerS3 = require('multer-s3')
+module.exports = app
 
-module.exports = {
-  app,
-  // upload: multerS3({
-  //   s3: new AWS.S3({
-  //     accessKeyId: process.env.S3_MULTER_ID,
-  //     secretAccessKey: process.env.S3_MULTER_KEY,
-  //     region: process.env.S3_MULTER_NAME,
-  //   }),
-  //   bucket: process.env.S3_MULTER_NAME,
-  //   contentType: multerS3.AUTO_CONTENT_TYPE,
-  //   acl: 'public-read-write',
-  //   key: (req, file, cb) => {
-  //     const extension = path.extname(file.originalname)
-  //     cb(null, Date.now().toString() + extension)
-  //   },
-  //   limits: { fileSize: 5 * 1024 * 1024 },
-  // }),
-}
