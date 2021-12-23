@@ -168,16 +168,16 @@ module.exports = {
           const stackobj = {}
           const InputStackList = []
           stacks.forEach((el) => {
-            stackobj['userId'] = newuserId.id
+            stackobj['userId'] = newuserInfo.id
             stackobj['stackId'] = el
             let element = lodash.cloneDeep(stackobj)
             //출력예시 ::: InputStackList = [{userId: 1 , stackId: 3} , { userId:1 , stackId:5}]
             InputStackList.push(element)
-            console.log(InputStackList)
           })
           //JOIN테이블에 일괄 생성
           await models.user_stacks.bulkCreate(InputStackList)
         }
+        console.log(newuserInfo)
         //회원가입시 jwt 토큰을 만들어 cookie로 전송한다.
         const jwt = makejwt({
           id: newuserInfo.id,

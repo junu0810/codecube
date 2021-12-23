@@ -1,4 +1,3 @@
-require('dotenv').config()
 const router = require('express').Router()
 const controller = require('../controllers')
 const multer = require('multer')
@@ -66,7 +65,7 @@ router.get('/image/:key', (req, res) => {
     const key = req.params.key
     const readStream = getFileStream(key)
 
-    readStream.pipe(res)
+    console.log(readStream.pipe(res))
 })
 
 module.exports = router
